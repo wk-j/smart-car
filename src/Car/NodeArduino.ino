@@ -46,7 +46,7 @@ int isHit()
 
     disp.display(cm);
 
-    if (cm < 30)
+    if (cm < 20)
     {
         return 1;
     }
@@ -91,28 +91,34 @@ void loop()
     {
         motordriver.goBackward();
         beep();
+        delay(200);
+        motordriver.stop();
         delay(500);
 
-        // motordriver.stop();
-        // delay(500);
+        long r = random(0, 2);
 
-        int r = random(0, 2);
-        if (r)
+        if (r == 0)
         {
-            motordriver.goLeft();
-            delay(1000);
+            while (hit)
+            {
+                motordriver.goLeft();
+                delay(500);
+                hit = isHit();
+            }
         }
         else
         {
-            motordriver.goRight();
-            delay(1000);
+            while (hit)
+            {
+                motordriver.goRight();
+                delay(500);
+                hit = isHit();
+            }
         }
-
-        motordriver.stop();
     }
     else
     {
-        // motordriver.goForward();
+        motordriver.goForward();
     }
 
     if (ArduinoSerial.available())
