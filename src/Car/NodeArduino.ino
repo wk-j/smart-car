@@ -15,43 +15,129 @@ void setup()
     motordriver.init();
     motordriver.setSpeed(255, MOTORB);
     motordriver.setSpeed(255, MOTORA);
+
+    quiet();
 }
+
+long microsecondsToCentimeters(long microseconds)
+{
+    // The speed of sound is 340 m/s or 29 microseconds per centimeter.
+    // The ping travels out and back, so to find the distance of the
+    // object we take half of the distance travelled.
+    return microseconds / 29 / 2;
+}
+
+int isHit()
+{
+    int pingPin = 5;
+    int inPin = 3;
+
+    pinMode(pingPin, OUTPUT);
+    digitalWrite(pingPin, LOW);
+    delayMicroseconds(2);
+    digitalWrite(pingPin, HIGH);
+    delayMicroseconds(5);
+    digitalWrite(pingPin, LOW);
+
+    pinMode(inPin, INPUT);
+
+    long duration = pulseIn(inPin, HIGH);
+    int cm = (int)microsecondsToCentimeters(duration);
+
+    disp.display(cm);
+
+    if (cm < 30)
+    {
+        return 1;
+    }
+    return 0;
+}
+
+void quiet()
+{
+    int pingPin = 6;
+    pinMode(pingPin, OUTPUT);
+    digitalWrite(pingPin, HIGH);
+}
+
+void beep()
+{
+    int pingPin = 6;
+    pinMode(pingPin, OUTPUT);
+
+    int count = 2;
+    while (count > 0)
+    {
+        digitalWrite(pingPin, LOW);
+        delay(100);
+
+        digitalWrite(pingPin, HIGH);
+        delay(100);
+        count--;
+    }
+}
+
 void loop()
 {
-
     int forward = 1;
     int left = 2;
     int right = 3;
     int backward = 4;
     int stop = 5;
 
-    while (ArduinoSerial.available() > 0)
+    int hit = isHit();
+
+    if (hit)
+    {
+        motordriver.goBackward();
+        beep();
+        delay(500);
+
+        // motordriver.stop();
+        // delay(500);
+
+        int r = random(0, 2);
+        if (r)
+        {
+            motordriver.goLeft();
+            delay(1000);
+        }
+        else
+        {
+            motordriver.goRight();
+            delay(1000);
+        }
+
+        motordriver.stop();
+    }
+    else
+    {
+        // motordriver.goForward();
+    }
+
+    if (ArduinoSerial.available())
     {
         float val = ArduinoSerial.parseFloat();
-        if (ArduinoSerial.read() == '\n')
+
+        if (val == forward)
         {
-            Serial.println(val);
-            if (val == forward)
-            {
-                motordriver.goForward();
-            }
-            else if (val == left)
-            {
-                motordriver.goLeft();
-            }
-            else if (val == right)
-            {
-                motordriver.goRight();
-            }
-            else if (val == backward)
-            {
-                motordriver.goBackward();
-            }
-            else
-            {
-                motordriver.stop();
-            }
-            disp.display(val);
+            motordriver.goForward();
+        }
+        else if (val == left)
+        {
+            motordriver.goLeft();
+        }
+        else if (val == right)
+        {
+            motordriver.goRight();
+        }
+        else if (val == backward)
+        {
+            motordriver.goBackward();
+        }
+        else
+        {
+            motordriver.stop();
         }
     }
 }
