@@ -115,14 +115,15 @@ void loop()
                 hit = isHit();
             }
         }
+        motordriver.stop();
     }
     else
     {
         // motordriver.goForward();
-        motordriver.stop();
+        // motordriver.stop();
     }
 
-    if (ArduinoSerial.available())
+    while (ArduinoSerial.available() > 0)
     {
         float val = ArduinoSerial.parseFloat();
 
@@ -142,7 +143,7 @@ void loop()
         {
             motordriver.goBackward();
         }
-        else
+        else if (val == stop)
         {
             motordriver.stop();
         }
