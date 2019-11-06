@@ -1,6 +1,6 @@
 {
     "board": "arduino:avr:uno",
     "programmer": "AVR ISP",
-    "port": "/dev/cu.usbserial-143240",
+    "port": "/dev/cu.usbserial-141240",
     "sketch": "src/Car/NodeArduino.ino"
 }

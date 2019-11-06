@@ -90,10 +90,10 @@ void loop()
     if (hit)
     {
         motordriver.goBackward();
-        beep();
+        // beep();
         delay(200);
         motordriver.stop();
-        delay(500);
+        delay(200);
 
         long r = random(0, 2);
 
@@ -118,7 +118,8 @@ void loop()
     }
     else
     {
-        motordriver.goForward();
+        // motordriver.goForward();
+        motordriver.stop();
     }
 
     if (ArduinoSerial.available())

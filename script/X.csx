@@ -8,4 +8,4 @@ System.Net.Sockets.TcpClient clientSocket = new System.Net.Sockets.TcpClient();
 clientSocket.Connect("192.168.0.53", 80);
 
 NetworkStream serverStream = clientSocket.GetStream();
-serverStream.Write(ASCIIEncoding.ASCII.GetBytes("F"));
+serverStream.Write(ASCIIEncoding.ASCII.GetBytes("R"));
